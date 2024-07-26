@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh">
+    ' © this is a personal webside, all rights reserved by Joyance, the owner.'
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joyance的博客</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FAFAFA;
+            color: #212121;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #E0E0E0;
+        }
+        header {
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dark-mode header {
+            background-color: #1E1E1E;
+        }
+        nav {
+            background-color: #FFFFFF;
+            padding: 8px 16px;
+        }
+        .dark-mode nav {
+            background-color: #1E1E1E;
+        }
+        nav a {
+            color: #212121;
+            text-decoration: none;
+            margin-right: 16px;
+            font-weight: 500;
+        }
+        .dark-mode nav a {
+            color: #E0E0E0;
+        }
+        .container {
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 2px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .dark-mode .card {
+            background-color: #2C2C2C;
+        }
+        .article {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #EEEEEE;
+        }
+        .dark-mode .article {
+            border-bottom-color: #424242;
+        }
+        button {
+            background-color: #212121;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.3s;
+        }
+        .dark-mode button {
+            background-color: #4A4A4A;
+            color: #E0E0E0;
+        }
+        button:hover {
+            background-color: #424242;
+        }
+        .dark-mode button:hover {
+            background-color: #616161;
+        }
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #212121;
+            color: #FFFFFF;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+            transition: background-color 0.3s;
+            display: none;
+        }
+        .dark-mode .fab {
+            background-color: #4A4A4A;
+            color: #E0E0E0;
+        }
+        .fab:hover {
+            background-color: #424242;
+        }
+        .dark-mode .fab:hover {
+            background-color: #616161;
+        }
+        .full-screen-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .dark-mode .full-screen-editor {
+            background-color: #1E1E1E;
+        }
+        .full-screen-editor input,
+        .full-screen-editor textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #BDBDBD;
+            border-radius: 2px;
+            font-size: 16px;
+        }
+        .dark-mode .full-screen-editor input,
+        .dark-mode .full-screen-editor textarea {
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+            border-color: #424242;
+        }
+        .copy-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 8px;
+        }
+        .copy-button i {
+            font-size: 18px;
+        }
+        .dark-mode .copy-button {
+            color: #E0E0E0;
+        }
+
+        /* 响应式设计调整 */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 12px;
+            }
+
+            #controls {
+                margin-top: 12px;
+            }
+
+            nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            nav a {
+                flex: 1 0 auto;
+                text-align: center;
+                padding: 8px 0;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .full-screen-editor {
+                padding: 12px;
+            }
+
+            .full-screen-editor input,
+            .full-screen-editor textarea {
+                font-size: 14px;
+            }
+
+            .full-screen-editor .button-container {
+                flex-direction: column;
+            }
+
+            .full-screen-editor button {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+
+            .fab {
+                width: 48px;
+                height: 48px;
+                line-height: 48px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="headerTitle">Joyance的博客</h1>
+        <div id="controls">
+            <button onclick="toggleLanguage()" id="languageToggle">EN</button>
+            <button onclick="toggleDarkMode()" id="darkModeToggle">☾</button>
+            <button onclick="toggleLogin()" id="loginStatus">登陆</button>
+        </div>
+    </header>
+
+    <nav>
+        <a href="#" onclick="showPage('home')" id="navHome">首页</a>
+        <a href="#" onclick="showPage('blog')" id="navBlog">博客</a>
+        <a href="#" onclick="showPage('contact')" id="navContact">联系</a>
+    </nav>
+
+    <div class="container" id="content">
+        <!-- 内容将通过JavaScript动态加载 -->
+    </div>
+
+    <div id="fullScreenEditor" class="full-screen-editor" style="display:none;">
+        <input type="text" id="postTitle" placeholder="文章标题">
+        <textarea id="postContent" placeholder="文章内容" rows="20"></textarea>
+        <button onclick="savePost()">保存</button>
+        <button onclick="closeFullScreenEditor()">取消</button>
+    </div>
+
+    <div class="fab" onclick="showNewPostEditor()"><i class="material-icons">add</i></div>
+
+    <script>
+        let isLoggedIn = false;
+        let articles = [];
+        let isEnglish = false;
+        let isDarkMode = false;
+        let editingIndex = -1;
+
+        // 加载保存的文章
+        if (localStorage.getItem('articles')) {
+            articles = JSON.parse(localStorage.getItem('articles'));
+        }
+
+        function toggleLogin() {
+            if (!isLoggedIn) {
+                const password = prompt(isEnglish ? 'Enter password:' : '请输入密码：');
+                if (password === 'wscjy1305') {
+                    isLoggedIn = true;
+                    updateLoginStatus();
+                    document.querySelector('.fab').style.display = 'block';
+                } else {
+                    alert(isEnglish ? 'Incorrect password' : '密码错误');
+                }
+            } else {
+                isLoggedIn = false;
+                updateLoginStatus();
+                document.querySelector('.fab').style.display = 'none';
+            }
+        }
+
+        function updateLoginStatus() {
+            const loginButton = document.getElementById('loginStatus');
+            loginButton.textContent = isLoggedIn ? (isEnglish ? 'Logout' : '登出') : (isEnglish ? 'Login' : '登录');
+            document.querySelector('.fab').style.display = isLoggedIn ? 'block' : 'none';
+        }
+
+        function saveArticles() {
+            localStorage.setItem('articles', JSON.stringify(articles));
+        }
+
+        function showPage(page) {
+            const content = document.getElementById('content');
+            content.innerHTML = '';
+            switch (page) {
+                case 'home':
+                    content.innerHTML = `
+                        <div class="card">
+                            <h2>${isEnglish ? 'Welcome to My Blog' : '❏ 欢迎来到我的个人博客'}</h2>
+                            <p>${isEnglish ? 'A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information.' : '博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。'}</p>
+                        </div>
+                        <div class="card">
+                            <h2>${isEnglish ? 'Recent Posts' : '最近文章'}</h2>
+                            <div id="recentArticles"></div>
+                        </div>
+                    `;
+                    const recentArticles = document.getElementById('recentArticles');
+                    if (articles.length === 0) {
+                        recentArticles.innerHTML = `<p>${isEnglish ? 'No articles yet.' : '暂无文章。'}</p>`;
+                    } else {
+                        articles.slice(0, 3).forEach((article, index) => {
+                            recentArticles.innerHTML += `
+                                <div class="article">
+                                    <h3>${article.title}</h3>
+                                    <p>${article.content.substring(0, 100)}...</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    break;
+                case 'blog':
+                    content.innerHTML = `
+                        <div class="card">
+                            <h2>${isEnglish ? 'Blog Posts' : '博客文章'}</h2>
+                            <div id="articlesList"></div>
+                        </div>
+                    `;
+                    const articlesList = document.getElementById('articlesList');
+                    if (articles.length === 0) {
+                        articlesList.innerHTML = `<p>${isEnglish ? 'No articles yet.' : '暂无文章。'}</p>`;
+                    } else {
+                        articles.forEach((article, index) => {
+                            articlesList.innerHTML += `
+                                <div class="article">
+                                    <h3>${article.title}</h3>
+                                    <p>${article.content}</p>
+                                    ${isLoggedIn ? `
+                                        <div class="edit-delete-buttons">
+                                            <button onclick="editArticle(${index})">${isEnglish ? 'Edit' : '编辑'}</button>
+                                            <button onclick="deleteArticle(${index})">${isEnglish ? 'Delete' : '删除'}</button>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        });
+                    }
+                    break;
+                case 'contact':
+                    content.innerHTML = `
+                        <div class="card">
+                            <h2>${isEnglish ? 'Contact Me' : '联系我'}</h2>
+                            <p>
+                                ${isEnglish ? 'Email: ' : '邮箱：'}guangyinzhong@outlook.com
+                                <button class="copy-button" onclick="copyToClipboard('guangyinzhong@outlook.com')">
+                                    <i class="material-icons">content_copy</i>
+                                </button>
+                            </p>
+                            <p>
+                                ${isEnglish ? 'WechatID: ' : '微信号：'}Jiayne-Cui
+                                <button class="copy-button" onclick="copyToClipboard('Jiayne-Cui')">
+                                    <i class="material-icons">content_copy</i>
+                                </button>
+                            </p>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(isEnglish ? 'Copied to clipboard!' : '已复制到剪贴板！');
+            });
+        }
+
+        function showNewPostEditor() {
+            if (isLoggedIn) {
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                document.getElementById('fullScreenEditor').style.display = 'flex';
+                editingIndex = -1;
+            }
+        }
+
+        function closeFullScreenEditor() {
+            document.getElementById('fullScreenEditor').style.display = 'none';
+        }
+
+        function savePost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            if (title && content) {
+                if (editingIndex === -1) {
+                    articles.unshift({ title, content });
+                } else {
+                    articles[editingIndex] = { title, content };
+                }
+                saveArticles();
+                closeFullScreenEditor();
+                showPage('blog');
+            }
+        }
+
+        function editArticle(index) {
+            editingIndex = index;
+            const article = articles[index];
+            document.getElementById('postTitle').value = article.title;
+            document.getElementById('postContent').value = article.content;
+            document.getElementById('fullScreenEditor').style.display = 'flex';
+        }
+
+        function deleteArticle(index) {
+            if (confirm(isEnglish ? 'Are you sure you want to delete this article?' : '确定要删除这篇文章吗？')) {
+                articles.splice(index, 1);
+                saveArticles();
+                showPage('blog');
+            }
+        }
+
+        function toggleLanguage() {
+            isEnglish = !isEnglish;
+            const languageToggle = document.getElementById('languageToggle');
+            languageToggle.textContent = isEnglish ? '文' : 'EN';
+            updateTexts();
+            showPage('home');
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.textContent = isDarkMode ? '❍' : '☾';
+        }
+
+        function updateTexts() {
+            document.getElementById('headerTitle').textContent = isEnglish ? "Joyance's Blog" : 'Joyance的博客';
+            document.getElementById('navHome').textContent = isEnglish ? 'Home' : '首页';
+            document.getElementById('navBlog').textContent = isEnglish ? 'Blog' : '博客';
+            document.getElementById('navContact').textContent = isEnglish ? 'Contact' : '联系';
+            updateLoginStatus();
+        }
+
+        // 初始化页面
+        updateLoginStatus();
+        showPage('home');
+    </script>
+</body>
+</html>
