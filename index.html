@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joyance的博客</title>
+    <title>Joyance's Plog</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body {
@@ -224,11 +224,11 @@
 </head>
 <body>
     <header>
-        <h1 id="headerTitle">Joyance的博客</h1>
+        <h1 id="headerTitle">Joyance's Plog</h1>
         <div id="controls">
             <button onclick="toggleLanguage()" id="languageToggle">EN</button>
             <button onclick="toggleDarkMode()" id="darkModeToggle">☾</button>
-            <button onclick="toggleLogin()" id="loginStatus">登陆</button>
+            <button onclick="toggleLogin()" id="loginStatus">登录</button>
         </div>
     </header>
 
@@ -248,108 +248,90 @@
         <button onclick="savePost()">保存</button>
         <button onclick="closeFullScreenEditor()">取消</button>
     </div>
-
     <div class="fab" onclick="showNewPostEditor()"><i class="material-icons">add</i></div>
-
     <script>
-        let isLoggedIn = false;
-        let articles = [];
         let isEnglish = false;
         let isDarkMode = false;
+        let isLoggedIn = false;
         let editingIndex = -1;
+        let articles = [];
 
-        // 加载保存的文章
-        if (localStorage.getItem('articles')) {
-            articles = JSON.parse(localStorage.getItem('articles'));
+        const password = 'wscjy1305';
+
+        // GitHub 配置
+        const owner = 'Joyance-tsui';
+        const repo = 'my-blog-articles';
+        const path = 'articles/';
+        const token = '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';
+
+        function toggleLanguage() {
+            isEnglish = !isEnglish;
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            document.getElementById('headerTitle').innerText = isEnglish ? "Joyance's Blog" : "Joyance的博客";
+            document.getElementById('languageToggle').innerText = isEnglish ? "文" : "EN";
+            document.getElementById('navHome').innerText = isEnglish ? "Home" : "首页";
+            document.getElementById('navBlog').innerText = isEnglish ? "Blog" : "博客";
+            document.getElementById('navContact').innerText = isEnglish ? "Contact" : "联系";
+            document.getElementById('loginStatus').innerText = isLoggedIn ? (isEnglish ? "Logout" : "登出") : (isEnglish ? "Login" : "登入");
+            showPage(currentPage);
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            document.getElementById('darkModeToggle').innerText = isDarkMode ? "❍" : "☾";
         }
 
         function toggleLogin() {
-            if (!isLoggedIn) {
-                const password = prompt(isEnglish ? 'Enter password:' : '请输入密码：');
-                if (password === 'wscjy1305') {
+            if (isLoggedIn) {
+                isLoggedIn = false;
+                document.getElementById('loginStatus').innerText = isEnglish ? "Login" : "登入";
+                document.querySelector('.fab').style.display = 'none';
+            } else {
+                const inputPassword = prompt(isEnglish ? "Please enter password:" : "请输入密码：");
+                if (inputPassword === password) {
                     isLoggedIn = true;
-                    updateLoginStatus();
+                    document.getElementById('loginStatus').innerText = isEnglish ? "Logout" : "登出";
                     document.querySelector('.fab').style.display = 'block';
                 } else {
-                    alert(isEnglish ? 'Incorrect password' : '密码错误');
+                    alert(isEnglish ? "Incorrect password!" : "密码错误！");
                 }
-            } else {
-                isLoggedIn = false;
-                updateLoginStatus();
-                document.querySelector('.fab').style.display = 'none';
             }
+            showPage(currentPage);
         }
 
-        function updateLoginStatus() {
-            const loginButton = document.getElementById('loginStatus');
-            loginButton.textContent = isLoggedIn ? (isEnglish ? 'Logout' : '登出') : (isEnglish ? 'Login' : '登录');
-            document.querySelector('.fab').style.display = isLoggedIn ? 'block' : 'none';
-        }
-
-        function saveArticles() {
-            localStorage.setItem('articles', JSON.stringify(articles));
-        }
+        let currentPage = 'home';
 
         function showPage(page) {
+            currentPage = page;
             const content = document.getElementById('content');
             content.innerHTML = '';
+
             switch (page) {
                 case 'home':
                     content.innerHTML = `
                         <div class="card">
-                            <h2>${isEnglish ? 'Welcome to My Blog' : '❏ 欢迎来到我的个人博客'}</h2>
-                            <p>${isEnglish ? 'A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information.' : '博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。'}</p>
-                        </div>
-                        <div class="card">
-                            <h2>${isEnglish ? 'Recent Posts' : '最近文章'}</h2>
-                            <div id="recentArticles"></div>
+                            <h2>${isEnglish ? "Welcome to Joyance's Blog" : "欢迎来到Joyance的博客"}</h2>
+                            <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p>
                         </div>
                     `;
-                    const recentArticles = document.getElementById('recentArticles');
-                    if (articles.length === 0) {
-                        recentArticles.innerHTML = `<p>${isEnglish ? 'No articles yet.' : '暂无文章。'}</p>`;
-                    } else {
-                        articles.slice(0, 3).forEach((article, index) => {
-                            recentArticles.innerHTML += `
-                                <div class="article">
-                                    <h3>${article.title}</h3>
-                                    <p>${article.content.substring(0, 100)}...</p>
-                                </div>
-                            `;
-                        });
-                    }
                     break;
                 case 'blog':
                     content.innerHTML = `
                         <div class="card">
-                            <h2>${isEnglish ? 'Blog Posts' : '博客文章'}</h2>
-                            <div id="articlesList"></div>
+                            <h2>${isEnglish ? "Blog Posts" : "博客文章"}</h2>
+                            <div id="articleList"></div>
                         </div>
                     `;
-                    const articlesList = document.getElementById('articlesList');
-                    if (articles.length === 0) {
-                        articlesList.innerHTML = `<p>${isEnglish ? 'No articles yet.' : '暂无文章。'}</p>`;
-                    } else {
-                        articles.forEach((article, index) => {
-                            articlesList.innerHTML += `
-                                <div class="article">
-                                    <h3>${article.title}</h3>
-                                    <p>${article.content}</p>
-                                    ${isLoggedIn ? `
-                                        <div class="edit-delete-buttons">
-                                            <button onclick="editArticle(${index})">${isEnglish ? 'Edit' : '编辑'}</button>
-                                            <button onclick="deleteArticle(${index})">${isEnglish ? 'Delete' : '删除'}</button>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `;
-                        });
-                    }
+                    displayArticles();
                     break;
                 case 'contact':
                     content.innerHTML = `
                         <div class="card">
-                            <h2>${isEnglish ? 'Contact Me' : '联系我'}</h2>
+                            <h2>${isEnglish ? "Contact Me" : "联系我"}</h2>
                             <p>
                                 ${isEnglish ? 'Email: ' : '邮箱：'}guangyinzhong@outlook.com
                                 <button class="copy-button" onclick="copyToClipboard('guangyinzhong@outlook.com')">
@@ -362,87 +344,199 @@
                                     <i class="material-icons">content_copy</i>
                                 </button>
                             </p>
+								 <p>
+                                ${isEnglish ? 'X: ' : '推特账号：'}@Xixiphus_Jiayue
+                                <button class="copy-button" onclick="copyToClipboard('@Xixiphus_Jiayue')">
+                                    <i class="material-icons">content_copy</i>
+                                </button>
+                            </p>
+
                         </div>
                     `;
                     break;
             }
         }
 
-        function copyToClipboard(text) {
+        function displayArticles() {
+            const articleList = document.getElementById('articleList');
+            articleList.innerHTML = '';
+            articles.forEach((article, index) => {
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p>${article.content.substring(0, 100)}...</p>
+                    <button onclick="showFullArticle(${index})">${isEnglish ? "Read More" : "阅读更多"}</button>
+                    ${isLoggedIn ? `
+                        <button onclick="editPost(${index})">${isEnglish ? "Edit" : "编辑"}</button>
+                        <button onclick="deletePost(${index})">${isEnglish ? "Delete" : "删除"}</button>
+                    ` : ''}
+                `;
+                articleList.appendChild(articleElement);
+            });
+        }
+
+        function showFullArticle(index) {
+            const article = articles[index];
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card">
+                    <h2>${article.title}</h2>
+                    <p>${article.content}</p>
+                    <button onclick="showPage('blog')">${isEnglish ? "Back to Blog" : "返回博客"}</button>
+                </div>
+            `;
+        }
+		  
+		 function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert(isEnglish ? 'Copied to clipboard!' : '已复制到剪贴板！');
+                alert(isEnglish ? 'Copied' : '已复制到剪贴板');
             });
         }
 
         function showNewPostEditor() {
-            if (isLoggedIn) {
-                document.getElementById('postTitle').value = '';
-                document.getElementById('postContent').value = '';
-                document.getElementById('fullScreenEditor').style.display = 'flex';
-                editingIndex = -1;
-            }
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            editingIndex = -1;
+            document.getElementById('fullScreenEditor').style.display = 'flex';
         }
 
         function closeFullScreenEditor() {
             document.getElementById('fullScreenEditor').style.display = 'none';
         }
 
-        function savePost() {
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
+        async function savePost() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            
             if (title && content) {
-                if (editingIndex === -1) {
-                    articles.unshift({ title, content });
-                } else {
-                    articles[editingIndex] = { title, content };
+                const fileName = title.replace(/\s+/g, '-').toLowerCase() + '.md';
+                const fileContent = `# ${title}\n\n${content}`;
+                
+                try {
+                    await createOrUpdateFile(fileName, fileContent);
+                    if (editingIndex === -1) {
+                        articles.unshift({ title, content });
+                    } else {
+                        articles[editingIndex] = { title, content };
+                    }
+                    closeFullScreenEditor();
+                    await fetchArticles();
+                    showPage('blog');
+                } catch (error) {
+                    console.error('Error saving post:', error);
+                    alert(isEnglish ? 'Failed to save post. Please try again.' : '保存文章失败。请重试。');
                 }
-                saveArticles();
-                closeFullScreenEditor();
-                showPage('blog');
             }
         }
 
-        function editArticle(index) {
-            editingIndex = index;
+        async function createOrUpdateFile(fileName, content) {
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}${fileName}`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.sha) {
+                    const updateResponse = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: 'Update article',
+                            content: btoa(content),
+                            sha: data.sha
+                        })
+                    });
+                    if (!updateResponse.ok) throw new Error('Failed to update file');
+                } else {
+                    throw new Error('File does not exist');
+                }
+            } catch (error) {
+                const createResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Create new article',
+                        content: btoa(content)
+                    })
+                });
+                if (!createResponse.ok) throw new Error('Failed to create file');
+            }
+        }
+
+        async function fetchArticles() {
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                }
+            });
+            const files = await response.json();
+            articles = await Promise.all(files.map(async file => {
+                const contentResponse = await fetch(file.download_url);
+                const content = await contentResponse.text();
+                const title = content.split('\n')[0].replace('# ', '');
+                return { title, content: content.split('\n').slice(2).join('\n') };
+            }));
+        }
+
+        function editPost(index) {
             const article = articles[index];
             document.getElementById('postTitle').value = article.title;
             document.getElementById('postContent').value = article.content;
+            editingIndex = index;
             document.getElementById('fullScreenEditor').style.display = 'flex';
         }
 
-        function deleteArticle(index) {
-            if (confirm(isEnglish ? 'Are you sure you want to delete this article?' : '确定要删除这篇文章吗？')) {
-                articles.splice(index, 1);
-                saveArticles();
-                showPage('blog');
+        async function deletePost(index) {
+            if (confirm(isEnglish ? 'Are you sure you want to delete this post?' : '确定要删除这篇文章吗？')) {
+                const article = articles[index];
+                const fileName = article.title.replace(/\s+/g, '-').toLowerCase() + '.md';
+                const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}${fileName}`;
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                        }
+                    });
+                    const data = await response.json();
+
+                    const deleteResponse = await fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: 'Delete article',
+                            sha: data.sha
+                        })
+                    });
+
+                    if (!deleteResponse.ok) throw new Error('Failed to delete file');
+
+                    articles.splice(index, 1);
+                    await fetchArticles();
+                    showPage('blog');
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    alert(isEnglish ? 'Failed to delete post. Please try again.' : '删除文章失败。请重试。');
+                }
             }
         }
 
-        function toggleLanguage() {
-            isEnglish = !isEnglish;
-            const languageToggle = document.getElementById('languageToggle');
-            languageToggle.textContent = isEnglish ? '文' : 'EN';
-            updateTexts();
-            showPage('home');
-        }
-
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode');
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            darkModeToggle.textContent = isDarkMode ? '❍' : '☾';
-        }
-
-        function updateTexts() {
-            document.getElementById('headerTitle').textContent = isEnglish ? "Joyance's Blog" : 'Joyance的博客';
-            document.getElementById('navHome').textContent = isEnglish ? 'Home' : '首页';
-            document.getElementById('navBlog').textContent = isEnglish ? 'Blog' : '博客';
-            document.getElementById('navContact').textContent = isEnglish ? 'Contact' : '联系';
-            updateLoginStatus();
-        }
-
-        // 初始化页面
-        updateLoginStatus();
+        window.onload = fetchArticles;
         showPage('home');
     </script>
 </body>
