@@ -324,10 +324,10 @@
                 content.innerHTML = `
                     <div class="card">
                         <h2>${isEnglish ? 'Welcome to my blog' : '欢迎来到我的博客'}</h2>
-                        <p>${isEnglish ? 'Here you can find my thoughts and experiences about technology and life.' : '在这里，你可以找到我关于技术和生活的想法和经历。'}</p>
-                    </div>
+                        <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p></div>
                     <h3>${isEnglish ? 'Recent Posts' : '最新文章'}</h3>
-                    <div id="recentPosts"></div>
+                    <div id="recentPosts">
+		    </div>
                 `;
                 displayRecentPosts();
                 break;
