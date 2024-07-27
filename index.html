@@ -282,7 +282,7 @@
     let isDarkMode = false;
     let isLoggedIn = false;
     let articles = [
-        { title: '欢迎来到我的博客', content: '这是我的第一篇博客文章。我会在这里分享我的想法和经验。\n\n希望你能喜欢！' },
+        { title: '开启我的个人博客', content: '这是我的第一个个人博客，没有买单独的域名，功能也不齐全（换行的显示还不支持），而且文章是直接存在网页前端程序里的（太简陋了），但是目前应该够用了。 将来的打算是，这个平台作为我发布我文章的地方。微信公众号和知乎我也会同步跟进。 但是这个博客与公众号和知乎有什么不同的呢？ 主要是他是我根据我的审美设计的 这样的平台虽然小了，但是却很符合我目前写文章的状态 也是我的上一次总结里说的，凭借自己的爱好 我是没有盈利的 当然还有一个原因，有可能其他的平台上我说话有些限制 在这里就可以发一些我不会在知乎上和公众号上发送的内容 当然有一些的来源是微信朋友圈 但是微信朋友圈也有审查（虽然我用的是WeChat账号） 而且传播范围也有限 所以，博客的计划就这样了 如果你的编程水平（特别是写网页的）不错 愿意帮我完善这个网站 你可以在“联系”那一栏找到我的微信号和邮箱 如果你只是单纯的阅读，那也别忘了加个收藏 不然以后就找不到了 有新域名时另作通知 2024/7/27' },
         { title: '关于我', content: '我是一个热爱技术和写作的程序员。我喜欢探索新的技术，并把我学到的东西分享给其他人。\n\n在这个博客里，你会看到我关于编程、技术趋势、和个人成长的文章。' }
     ];
     let editingIndex = -1;
@@ -323,7 +323,7 @@
             case 'home':
                 content.innerHTML = `
                     <div class="card">
-                        <h2>${isEnglish ? 'Welcome to my blog' : '欢迎来到我的博客'}</h2>
+                        <h2>${isEnglish ? 'Welcome to my blog' : '❏欢迎来到我的个人博客'}</h2>
                         <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p></div>
                     <h3>${isEnglish ? 'Recent Posts' : '最新文章'}</h3>
                     <div id="recentPosts">
