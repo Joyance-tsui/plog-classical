@@ -251,7 +251,6 @@
         <div id="controls">
             <button onclick="toggleLanguage()" id="languageToggle">EN</button>
             <button onclick="toggleDarkMode()" id="darkModeToggle">☾</button>
-            <button onclick="toggleLogin()" id="loginStatus">登录</button>
         </div>
     </header>
 
@@ -299,17 +298,10 @@
         document.getElementById('darkModeToggle').textContent = isDarkMode ? '❍' : '☾';
     }
 
-    function toggleLogin() {
-        isLoggedIn = !isLoggedIn;
-        document.getElementById('loginStatus').textContent = isLoggedIn ? (isEnglish ? 'Logout' : '登出') : (isEnglish ? 'Login' : '登录');
-        document.querySelector('.fab').style.display = isLoggedIn ? 'block' : 'none';
-    }
-
     function updateLanguage() {
         const elements = {
             headerTitle: isEnglish ? "Joyance's Plog" : "Joyance的博客",
             languageToggle: isEnglish ? 'CN' : 'EN',
-            loginStatus: isLoggedIn ? (isEnglish ? 'Logout' : '登出') : (isEnglish ? 'Login' : '登录'),
             navHome: isEnglish ? 'Home' : '首页',
             navBlog: isEnglish ? 'Blog' : '博客',
             navContact: isEnglish ? 'Contact' : '联系'
