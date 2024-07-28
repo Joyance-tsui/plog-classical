@@ -185,6 +185,28 @@
             top: 16px;
             right: 16px;
         }
+        .pinned {
+            border-left: 4px solid #9E9E9E;
+        }
+        .dark-mode .pinned {
+            border-left: 4px solid #757575;
+        }
+        .article-preview {
+            white-space: pre-line;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .blog-preview {
+            white-space: pre-line;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
 
         /* 响应式设计调整 */
         @media (max-width: 768px) {
@@ -247,7 +269,7 @@
 </head>
 <body>
     <header>
-        <h1 id="headerTitle">Joyance's Plog</h1>
+        <h1 id="headerTitle">Joyance的博客</h1>
         <div id="controls">
             <button onclick="toggleLanguage()" id="languageToggle">EN</button>
             <button onclick="toggleDarkMode()" id="darkModeToggle">☾</button>
@@ -267,12 +289,15 @@
     <div id="fullScreenEditor" class="full-screen-editor" style="display:none;">
         <input type="text" id="postTitle" placeholder="文章标题">
         <textarea id="postContent" placeholder="文章内容" rows="20"></textarea>
+        <label>
+            <input type="checkbox" id="postPinned"> 置顶文章
+        </label>
         <button onclick="savePost()">保存</button>
         <button onclick="closeFullScreenEditor()">取消</button>
     </div>
 
     <div id="fullArticle" class="full-article" style="display:none;">
-        <button class="close-button" onclick="closeFullArticle()">关闭</button>
+        <button class="close-button" onclick="closeFullArticle()">close</button>
         <div id="fullArticleContent"></div>
     </div>
 
@@ -282,13 +307,20 @@
     let isDarkMode = false;
     let isLoggedIn = false;
     let articles = [
-        { title: '开启我的个人博客', content: '这是我的第一个个人博客，没有买单独的域名，功能也不齐全（换行的显示还不支持），而且文章是直接存在网页前端程序里的（太简陋了），但是目前应该够用了。 将来的打算是，这个平台作为我发布我文章的地方。微信公众号和知乎我也会同步跟进。 但是这个博客与公众号和知乎有什么不同的呢？ 主要是他是我根据我的审美设计的 这样的平台虽然小了，但是却很符合我目前写文章的状态 也是我的上一次总结里说的，凭借自己的爱好 我是没有盈利的 当然还有一个原因，有可能其他的平台上我说话有些限制 在这里就可以发一些我不会在知乎上和公众号上发送的内容 当然有一些的来源是微信朋友圈 但是微信朋友圈也有审查（虽然我用的是WeChat账号） 而且传播范围也有限 所以，博客的计划就这样了 如果你的编程水平（特别是写网页的）不错 愿意帮我完善这个网站 你可以在“联系”那一栏找到我的微信号和邮箱 如果你只是单纯的阅读，那也别忘了加个收藏 不然以后就找不到了 有新域名时另作通知 2024/7/27' },
-        ];
-    let editingIndex = -1;
+        { title: '开启我的个人博客', content: '这是我的第一个个人博客，没有买单独的域名，功能也不齐全（换行的显示还不支持），而且文章是直接存在网页前端程序里的（太简陋了），但是目前应该够用了。 \n\n将来的打算是，这个平台作为我发布我文章的地方。微信公众号和知乎我也会同步跟进。 \n\n但是这个博客与公众号和知乎有什么不同的呢？ \n\n主要是他是我根据我的审美设计的 这样的平台虽然小了，但是却很符合我目前写文章的状态 \n\n也是我的上一次总结里说的，凭借自己的爱好 我是没有盈利的 \n\n当然还有一个原因，有可能其他的平台上我说话有些限制 \n\n在这里就可以发一些我不会在知乎上和公众号上发送的内容 \n\n当然有一些的来源是微信朋友圈 \n\n但是微信朋友圈也有审查（虽然我用的是WeChat账号） 而且传播范围也有限 \n\n所以，博客的计划就这样了 \n\n如果你的编程水平（特别是写网页的）不错 愿意帮我完善这个网站 你可以在“联系”那一栏找到我的微信号和邮箱 \n\n如果你只是单纯的阅读，那也别忘了加个收藏 不然以后就找不到了 （以后肯定会挂域名的，到时候另作通知 \n\n2024/7/26', pinned: true },
+    ];
+    let englishArticles = [
+        { title: 'Starting My Personal Blog', content: 'This is my first personal blog. I haven\'t bought a separate domain, and the functionality is not complete (line breaks are not yet supported). The articles are directly stored in the frontend code (it\'s quite rudimentary), but it should be sufficient for now.\n\nMy future plan is to use this platform to publish my articles. I will also synchronize updates on WeChat Official Account and Zhihu.\n\nBut how is this blog different from WeChat Official Account and Zhihu?\n\nMainly, it\'s designed according to my aesthetic preferences. Although this platform is small, it suits my current writing style very well.\n\nAs I mentioned in my previous summary, I\'m not making a profit based on my hobbies.\n\nOf course, there\'s another reason: I might have some restrictions on what I can say on other platforms.\n\nHere, I can post content that I wouldn\'t share on Zhihu or WeChat Official Account.\n\nSome content may come from my WeChat Moments.\n\nHowever, WeChat Moments also has censorship (although I use a WeChat account), and the reach is limited.\n\nSo, this is the plan for the blog.\n\nIf you have good programming skills (especially in web development) and are willing to help me improve this website, you can find my WeChat ID and email in the Contact section.\n\nIf you\'re just here to read, don\'t forget to bookmark the page, or you might not be able to find it later. (I\'ll definitely set up a domain name in the future, and I\'ll make an announcement when that happens.)\n\n2024/7/26', pinned: true },
+    ];
 
     function toggleLanguage() {
         isEnglish = !isEnglish;
-        updateLanguage();
+        document.getElementById('languageToggle').textContent = isEnglish ? '中文' : 'EN';
+        document.getElementById('headerTitle').textContent = isEnglish ? 'Joyance\'s Plog' : 'Joyance的博客';
+        document.getElementById('navHome').textContent = isEnglish ? 'Home' : '首页';
+        document.getElementById('navBlog').textContent = isEnglish ? 'Blog' : '博客';
+        document.getElementById('navContact').textContent = isEnglish ? 'Contact' : '联系';
+        updateContent();
     }
 
     function toggleDarkMode() {
@@ -297,47 +329,22 @@
         document.getElementById('darkModeToggle').textContent = isDarkMode ? '❍' : '☾';
     }
 
-    function updateLanguage() {
-        const elements = {
-            headerTitle: isEnglish ? "Joyance's Plog" : "Joyance的博客",
-            languageToggle: isEnglish ? 'CN' : 'EN',
-            navHome: isEnglish ? 'Home' : '首页',
-            navBlog: isEnglish ? 'Blog' : '博客',
-            navContact: isEnglish ? 'Contact' : '联系'
-        };
-
-        for (const [id, text] of Object.entries(elements)) {
-            document.getElementById(id).textContent = text;
-        }
-
-        showPage(currentPage);
-    }
-
     function showPage(page) {
-        currentPage = page;
-        const content = document.getElementById('content');
-        content.innerHTML = '';
-
+        let content = '';
         switch (page) {
             case 'home':
-                content.innerHTML = `
-                    <div class="card">
-                        <h2>${isEnglish ? 'Welcome to my blog' : '❏ 欢迎来到我的个人博客'}</h2>
-                        <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p></div>
-                    <h3>${isEnglish ? 'Recent Posts' : '最新文章'}</h3>
-                    <div id="recentPosts">
-		    </div>
-                `;
-                displayRecentPosts();
+                content = `<div class="card">
+                    <h2>${isEnglish ? 'Welcome to my blog' : '❏ 欢迎来到我的个人博客'}</h2>
+                        <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p>
+                </div>`;
+                content += getArticlesHTML(true);
                 break;
             case 'blog':
-                content.innerHTML = `<h2>${isEnglish ? 'Blog Posts' : '博客文章'}</h2>`;
-                displayAllPosts();
+                content = getArticlesHTML(false);
                 break;
             case 'contact':
-                content.innerHTML = `
-                    <div class="card">
-                        <h2>${isEnglish ? 'Contact Information' : '联系信息'}</h2>
+                content = `<div class="card">
+                    <h2>${isEnglish ? 'Contact Information' : '联系信息'}</h2>
                         <p>
                                 ${isEnglish ? 'Email: ' : '邮箱：'}guangyinzhong@outlook.com
                                 <button class="copy-button" onclick="copyToClipboard('guangyinzhong@outlook.com')">
@@ -356,61 +363,37 @@
                                     <i class="material-icons">content_copy</i>
                                 </button>
                             </p>
-                    </div>
-                `;
+                    </div>`;
                 break;
         }
+        document.getElementById('content').innerHTML = content;
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        document.querySelector(`nav a[onclick="showPage('${page}')"]`).classList.add('active');
     }
 
-    function displayRecentPosts() {
-        const recentPosts = document.getElementById('recentPosts');
-        const postsToShow = articles.slice(0, 2);
-        postsToShow.forEach((article, index) => {
-            const postElement = document.createElement('div');
-            postElement.className = 'article';
-            postElement.innerHTML = `
-                <h3>${article.title}</h3>
-                <p>${truncateContent(article.content, 4)}</p>
-                ${article.content.split('\n').length > 4 ? `<button onclick="showFullArticle(${index})">${isEnglish ? 'Read More' : '阅读更多'}</button>` : ''}
-            `;
-            recentPosts.appendChild(postElement);
-        });
-    }
-
-    function displayAllPosts() {
-        articles.forEach((article, index) => {
-            const postElement = document.createElement('div');
-            postElement.className = 'article';
-            postElement.innerHTML = `
-                <h3>${article.title}</h3>
-                <p>${truncateContent(article.content, 4)}</p>
-                ${article.content.split('\n').length > 4 ? `<button onclick="showFullArticle(${index})">${isEnglish ? 'Read More' : '阅读更多'}</button>` : ''}
-                ${isLoggedIn ? `
-                    <button onclick="editPost(${index})">${isEnglish ? 'Edit' : '编辑'}</button>
-                    <button onclick="deletePost(${index})">${isEnglish ? 'Delete' : '删除'}</button>
-                ` : ''}
-            `;
-            document.getElementById('content').appendChild(postElement);
-        });
-    }
-
-    function truncateContent(content, lines) {
-        const contentLines = content.split('\n');
-        if (contentLines.length <= lines) {
-            return content;
-        }
-        return contentLines.slice(0, lines).join('\n') + '...';
+    function getArticlesHTML(isHomePage) {
+        let currentArticles = isEnglish ? englishArticles : articles;
+        let pinnedArticles = currentArticles.filter(article => article.pinned);
+        let unpinnedArticles = currentArticles.filter(article => !article.pinned);
+        let sortedArticles = [...pinnedArticles, ...unpinnedArticles];
+        
+        return sortedArticles.map((article, index) => `
+            <div class="card ${article.pinned ? 'pinned' : ''}">
+                <h2>${article.title}</h2>
+                <p class="${isHomePage ? 'article-preview' : 'blog-preview'}">${article.content}</p>
+                <button onclick="showFullArticle(${index})">${isEnglish ? 'Read More' : '阅读更多'}</button>
+            </div>
+        `).join('');
     }
 
     function showFullArticle(index) {
-        const article = articles[index];
-        const fullArticle = document.getElementById('fullArticle');
-        const fullArticleContent = document.getElementById('fullArticleContent');
-        fullArticleContent.innerHTML = `
+        let currentArticles = isEnglish ? englishArticles : articles;
+        let article = currentArticles[index];
+        document.getElementById('fullArticleContent').innerHTML = `
             <h2>${article.title}</h2>
-            <p>${article.content.replace(/\n/g, '<br>')}</p>
+            <p>${article.content}</p>
         `;
-        fullArticle.style.display = 'block';
+        document.getElementById('fullArticle').style.display = 'block';
     }
 
     function closeFullArticle() {
@@ -418,10 +401,7 @@
     }
 
     function showNewPostEditor() {
-        document.getElementById('postTitle').value = '';
-        document.getElementById('postContent').value = '';
-        editingIndex = -1;
-        document.getElementById('fullScreenEditor').style.display = 'flex';
+        document.getElementById('fullScreenEditor').style.display = 'block';
     }
 
     function closeFullScreenEditor() {
@@ -429,48 +409,29 @@
     }
 
     function savePost() {
-        const title = document.getElementById('postTitle').value.trim();
-        const content = document.getElementById('postContent').value.trim();
-        
-        if (title === '' || content === '') {
-            alert(isEnglish ? 'Title and content cannot be empty!' : '标题和内容不能为空！');
-            return;
-        }
-
-        if (editingIndex === -1) {
-            articles.unshift({ title, content });
+        let title = document.getElementById('postTitle').value;
+        let content = document.getElementById('postContent').value;
+        let isPinned = document.getElementById('postPinned').checked;
+        if (isEnglish) {
+            englishArticles.unshift({ title, content, pinned: isPinned });
         } else {
-            articles[editingIndex] = { title, content };
+            articles.unshift({ title, content, pinned: isPinned });
         }
-
         closeFullScreenEditor();
+        updateContent();
+    }
+
+    function updateContent() {
+        let currentPage = document.querySelector('nav a.active').getAttribute('onclick').match(/'(\w+)'/)[1];
         showPage(currentPage);
     }
 
-    function editPost(index) {
-        const article = articles[index];
-        document.getElementById('postTitle').value = article.title;
-        document.getElementById('postContent').value = article.content;
-        editingIndex = index;
-        document.getElementById('fullScreenEditor').style.display = 'flex';
-    }
-
-    function deletePost(index) {
-        if (confirm(isEnglish ? 'Are you sure you want to delete this post?' : '确定要删除这篇文章吗？')) {
-            articles.splice(index, 1);
-            showPage(currentPage);
-        }
-    }
-
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert(isEnglish ? 'Copied to clipboard!' : '已复制到剪贴板！');
-        });
+    // 检测系统暗色模式
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        toggleDarkMode();
     }
 
     // 初始化页面
-    let currentPage = 'home';
-    updateLanguage();
     showPage('home');
 </script>
 </body>
