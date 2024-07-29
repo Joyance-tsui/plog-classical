@@ -192,7 +192,7 @@
             border-left: 4px solid #757575;
         }
         .article-preview {
-            white-space: pre-line;
+            white-space: pre-wrap;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -200,12 +200,23 @@
             -webkit-box-orient: vertical;
         }
         .blog-preview {
-            white-space: pre-line;
+            white-space: pre-wrap;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
+        }
+        .article-content {
+            white-space: pre-wrap;
+        }
+        .article-link {
+            color: #212121;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .dark-mode .article-link {
+            color: #E0E0E0;
         }
 
         /* 响应式设计调整 */
@@ -278,7 +289,7 @@
 
     <nav>
         <a href="#" onclick="showPage('home')" id="navHome">首页</a>
-        <a href="#" onclick="showPage('blog')" id="navBlog">博客</a>
+        <a href="#" onclick="showPage('blog')" id="navBlog">更多</a>
         <a href="#" onclick="showPage('contact')" id="navContact">联系</a>
     </nav>
 
@@ -315,36 +326,48 @@
 
     function toggleLanguage() {
         isEnglish = !isEnglish;
-        document.getElementById('languageToggle').textContent = isEnglish ? '中文' : 'EN';
-        document.getElementById('headerTitle').textContent = isEnglish ? 'Joyance\'s Plog' : 'Joyance的博客';
-        document.getElementById('navHome').textContent = isEnglish ? 'Home' : '首页';
-        document.getElementById('navBlog').textContent = isEnglish ? 'Blog' : '博客';
-        document.getElementById('navContact').textContent = isEnglish ? 'Contact' : '联系';
-        updateContent();
+        updateLanguage();
     }
 
     function toggleDarkMode() {
         isDarkMode = !isDarkMode;
         document.body.classList.toggle('dark-mode');
-        document.getElementById('darkModeToggle').textContent = isDarkMode ? '❍' : '☾';
+        updateDarkModeButton();
+    }
+
+    function updateLanguage() {
+        document.getElementById('headerTitle').textContent = isEnglish ? "Joyance's Blog" : "Joyance的博客";
+        document.getElementById('languageToggle').textContent = isEnglish ? "中文" : "EN";
+        document.getElementById('navHome').textContent = isEnglish ? "Home" : "首页";
+        document.getElementById('navBlog').textContent = isEnglish ? "More" : "更多";
+        document.getElementById('navContact').textContent = isEnglish ? "Contact" : "联系";
+        showPage(currentPage);
+    }
+
+    function updateDarkModeButton() {
+        document.getElementById('darkModeToggle').textContent = isDarkMode ? "❍" : "☾";
     }
 
     function showPage(page) {
+        currentPage = page;
         let content = '';
-        switch (page) {
+        switch(page) {
             case 'home':
-                content = `<div class="card">
-                    <h2>${isEnglish ? 'Welcome to my blog' : '❏ 欢迎来到我的个人博客'}</h2>
+                content = `
+                    <div class="card">
+                        <h2>${isEnglish ? 'Welcome to my blog' : '❏ 欢迎来到我的个人博客'}</h2>
                         <p>${isEnglish ? "A blog is an informational website consisting of discrete, often informal diary-style text entries (posts).It is a website or online diary managed by an individual to post new articles, pictures or videos, used to record, express emotions or share information." : "博客是一个信息网站，由离散的、通常是非正式的日记式文本条目（帖子）组成。它是由个人管理的网站或在线日记，用于发布新的文章、图片或视频，用于记录、表达情感或分享信息。"}</p>
-                </div>`;
-                content += getArticlesHTML(true);
+                    </div>
+                    ${renderArticles(true)}
+                `;
                 break;
             case 'blog':
-                content = getArticlesHTML(false);
+                content = renderArticles(false);
                 break;
             case 'contact':
-                content = `<div class="card">
-                    <h2>${isEnglish ? 'Contact Information' : '联系信息'}</h2>
+                content = `
+                    <div class="card">
+                        <h2>${isEnglish ? 'Contact Information' : '联系信息'}</h2>
                         <p>
                                 ${isEnglish ? 'Email: ' : '邮箱：'}guangyinzhong@outlook.com
                                 <button class="copy-button" onclick="copyToClipboard('guangyinzhong@outlook.com')">
@@ -367,31 +390,35 @@
                 break;
         }
         document.getElementById('content').innerHTML = content;
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        document.querySelector(`nav a[onclick="showPage('${page}')"]`).classList.add('active');
     }
 
-    function getArticlesHTML(isHomePage) {
-        let currentArticles = isEnglish ? englishArticles : articles;
-        let pinnedArticles = currentArticles.filter(article => article.pinned);
-        let unpinnedArticles = currentArticles.filter(article => !article.pinned);
-        let sortedArticles = [...pinnedArticles, ...unpinnedArticles];
-        
-        return sortedArticles.map((article, index) => `
-            <div class="card ${article.pinned ? 'pinned' : ''}">
-                <h2>${article.title}</h2>
-                <p class="${isHomePage ? 'article-preview' : 'blog-preview'}">${article.content}</p>
-                <button onclick="showFullArticle(${index})">${isEnglish ? 'Read More' : '阅读更多'}</button>
-            </div>
-        `).join('');
+    function renderArticles(isHomePage) {
+        let articleHTML = '';
+        let displayedArticles = isEnglish ? englishArticles : articles;
+        displayedArticles = isHomePage ? displayedArticles.filter(article => article.pinned) : displayedArticles;
+        displayedArticles.forEach((article, index) => {
+            articleHTML += `
+                <div class="card article ${article.pinned ? 'pinned' : ''}">
+                    <h2>${article.title}</h2>
+                    <div class="${isHomePage ? 'article-preview' : 'blog-preview'}">${formatContent(article.content)}</div>
+                    <button onclick="showFullArticle(${index})">${isEnglish ? 'Read More' : '阅读更多'}</button>
+                </div>
+            `;
+        });
+        return articleHTML;
+    }
+
+    function formatContent(content) {
+        content = content.replace(/\[链接：([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" class="article-link" target="_blank">$1</a>');
+        content = content.replace(/\[Link: ([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" class="article-link" target="_blank">$1</a>');
+        return content;
     }
 
     function showFullArticle(index) {
-        let currentArticles = isEnglish ? englishArticles : articles;
-        let article = currentArticles[index];
+        const article = isEnglish ? englishArticles[index] : articles[index];
         document.getElementById('fullArticleContent').innerHTML = `
             <h2>${article.title}</h2>
-            <p>${article.content}</p>
+            <div class="article-content">${formatContent(article.content)}</div>
         `;
         document.getElementById('fullArticle').style.display = 'block';
     }
@@ -401,7 +428,11 @@
     }
 
     function showNewPostEditor() {
-        document.getElementById('fullScreenEditor').style.display = 'block';
+        if (isLoggedIn) {
+            document.getElementById('fullScreenEditor').style.display = 'flex';
+        } else {
+            alert(isEnglish ? 'Please log in to create a new post.' : '请登录以创建新文章。');
+        }
     }
 
     function closeFullScreenEditor() {
@@ -409,30 +440,30 @@
     }
 
     function savePost() {
-        let title = document.getElementById('postTitle').value;
-        let content = document.getElementById('postContent').value;
-        let isPinned = document.getElementById('postPinned').checked;
-        if (isEnglish) {
-            englishArticles.unshift({ title, content, pinned: isPinned });
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+        const isPinned = document.getElementById('postPinned').checked;
+        if (title && content) {
+            if (isEnglish) {
+                englishArticles.unshift({ title, content, pinned: isPinned });
+            } else {
+                articles.unshift({ title, content, pinned: isPinned });
+            }
+            closeFullScreenEditor();
+            showPage(currentPage);
         } else {
-            articles.unshift({ title, content, pinned: isPinned });
+            alert(isEnglish ? 'Please enter both title and content.' : '请输入标题和内容。');
         }
-        closeFullScreenEditor();
-        updateContent();
     }
 
-    function updateContent() {
-        let currentPage = document.querySelector('nav a.active').getAttribute('onclick').match(/'(\w+)'/)[1];
-        showPage(currentPage);
-    }
+    let currentPage = 'home';
 
-    // 检测系统暗色模式
+    // 检测浏览器是否使用暗色模式
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         toggleDarkMode();
     }
 
-    // 初始化页面
-    showPage('home');
+    showPage(currentPage);
 </script>
 </body>
 </html>
